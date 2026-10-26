@@ -1,0 +1,51 @@
+CREATE DATABASE IF NOT EXISTS silogan_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE silogan_db;
+
+CREATE TABLE IF NOT EXISTS users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    first_name VARCHAR(100) NOT NULL,
+    last_name VARCHAR(100) NOT NULL,
+    email VARCHAR(190) NOT NULL UNIQUE,
+    password_hash VARCHAR(255) NOT NULL,
+    address VARCHAR(255) DEFAULT NULL,
+    age TINYINT UNSIGNED DEFAULT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS shops (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    shop_name VARCHAR(255) NOT NULL,
+    owner_name VARCHAR(255) NOT NULL,
+    address VARCHAR(255) DEFAULT NULL,
+    contact_number VARCHAR(50) DEFAULT NULL,
+    added_by INT DEFAULT NULL,
+    updated_by INT DEFAULT NULL,
+    last_updated TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    CONSTRAINT fk_shops_added_by FOREIGN KEY (added_by) REFERENCES users(id),
+    CONSTRAINT fk_shops_updated_by FOREIGN KEY (updated_by) REFERENCES users(id)
+);
+
+CREATE TABLE IF NOT EXISTS menu_items (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    shop_id INT NOT NULL,
+    item_name VARCHAR(255) NOT NULL,
+    price DECIMAL(10,2) NOT NULL,
+    category VARCHAR(100) NOT NULL DEFAULT 'silog',
+    description TEXT DEFAULT NULL,
+    added_by INT DEFAULT NULL,
+    updated_by INT DEFAULT NULL,
+    last_updated TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    CONSTRAINT fk_menu_shop FOREIGN KEY (shop_id) REFERENCES shops(id) ON DELETE CASCADE,
+    CONSTRAINT fk_menu_added_by FOREIGN KEY (added_by) REFERENCES users(id),
+    CONSTRAINT fk_menu_updated_by FOREIGN KEY (updated_by) REFERENCES users(id)
+);
+
+CREATE TABLE IF NOT EXISTS activity_logs (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    action VARCHAR(20) NOT NULL,
+    record_type VARCHAR(30) NOT NULL,
+    record_id INT NOT NULL,
+    happened_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_activity_user FOREIGN KEY (user_id) REFERENCES users(id)
+);

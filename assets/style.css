@@ -1,0 +1,138 @@
+/* These few colors give the dashboard a quiet, consistent silogan identity. */
+:root { --ink:#292820; --muted:#737267; --paper:#fffefa; --page:#f3f2ed; --green:#354b3d; --orange:#c8663e; --line:#dfddd3; }
+* { box-sizing:border-box; }
+body { margin:0; background:var(--page); color:var(--ink); font:15px/1.5 Arial,sans-serif; }
+a { color:inherit; }
+h1,h2,h3,h4 { font-family:Georgia,'Times New Roman',serif; }
+
+/* The navbar groups the brand, page links, and signed-in user. */
+.topbar { min-height:62px; padding:10px 22px; display:flex; align-items:center; gap:18px; background:var(--paper); border-bottom:1px solid var(--line); }
+.wordmark,.topbar-right,.main-nav { display:flex; align-items:center; }
+.wordmark { gap:9px; font-size:14px; text-decoration:none; white-space:nowrap; }
+.brand-mark { width:36px; height:36px; display:grid; place-items:center; border-radius:6px; background:var(--green); color:white; font:bold 14px Georgia,serif; text-decoration:none; }
+.main-nav { align-self:stretch; gap:4px; }
+.nav-link { padding:0 12px; display:flex; align-items:center; color:var(--muted); font-size:13px; text-decoration:none; }
+.nav-link:hover,.nav-link.active { color:var(--green); }
+.nav-link.active { border-bottom:2px solid var(--green); font-weight:bold; }
+.topbar-right { margin-left:auto; gap:14px; }
+.welcome,.muted,.section-note { color:var(--muted); font-size:13px; }
+
+/* The photo and dashboard share the screen evenly on wider displays. */
+.dashboard-layout { min-height:100vh; display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); }
+.dashboard-panel { min-width:0; background:#f2efe6; }
+.food-photo { height:100vh; min-height:560px; position:sticky; top:0; overflow:hidden; background:#cbb47a; }
+.food-photo img { width:100%; height:100%; display:block; object-fit:cover; object-position:center; }
+.photo-caption { position:absolute; right:0; bottom:0; left:0; padding:26px 30px; background:rgba(35,46,37,.76); color:white; }
+.photo-caption span,.photo-placeholder span { font-size:10px; font-weight:bold; letter-spacing:1.6px; }
+.photo-caption strong,.photo-placeholder strong { display:block; margin-top:6px; font:26px/1.15 Georgia,serif; }
+.photo-placeholder { height:100%; padding:30px; display:flex; flex-direction:column; justify-content:end; background:#b99a57; color:white; }
+
+/* The page heading replaces the large hero with a clear title and one action. */
+.page-shell { width:100%; margin:0 auto; padding:0 28px; }
+.page-heading { margin:30px 0 24px; display:flex; align-items:center; justify-content:space-between; gap:16px; }
+.page-heading h1 { max-width:430px; margin:5px 0; font-size:29px; line-height:1.18; }
+.page-subtitle,.section-note { margin:4px 0 0; color:var(--muted); font-size:13px; }
+.eyebrow { margin:0; color:var(--orange); font-size:10px; font-weight:bold; letter-spacing:1.5px; }
+
+/* The shop list uses simple cards with the owner and audit details grouped. */
+.section-heading { margin:0 0 14px; display:flex; justify-content:space-between; align-items:end; }
+.section-heading h2 { margin:0; font-size:23px; }
+.count-badge { margin-left:5px; padding:2px 8px; border-radius:12px; background:#e8e9e2; color:var(--green); font: bold 12px Arial,sans-serif; vertical-align:middle; }
+.shop-grid,.forms-grid { display:grid; grid-template-columns:1fr; gap:13px; }
+.shop-card,.form-card,.activity-card { padding:17px; border:1px solid var(--line); border-radius:7px; background:var(--paper); }
+.shop-card-head { display:flex; justify-content:space-between; align-items:start; gap:10px; }
+.card-kicker { color:var(--orange); font-size:10px; font-weight:bold; letter-spacing:1px; }
+.shop-card h3 { margin:3px 0; font-size:21px; }
+.text-link,.row-actions a { color:var(--green); font-size:12px; font-weight:bold; text-decoration:none; }
+.shop-details { margin:13px 0; display:grid; grid-template-columns:70px 1fr; gap:4px 10px; color:var(--muted); font-size:12px; }
+.shop-details strong { color:var(--ink); font-weight:normal; }
+.audit-line { margin:11px 0; padding-top:8px; border-top:1px solid var(--line); color:var(--muted); font-size:10px; }
+
+/* Menu items stay compact so several meals remain easy to scan. */
+.menu-heading { padding-bottom:5px; border-bottom:1px solid var(--line); }
+.menu-heading h4 { margin:0; font-size:16px; }
+.menu-row { padding:9px 0; display:grid; grid-template-columns:minmax(0,1fr) auto; gap:3px 10px; border-bottom:1px solid var(--line); }
+.menu-name { min-width:0; display:flex; flex-direction:column; }
+.menu-name strong,.price { font-size:13px; }
+.menu-name span,.menu-name small { color:var(--muted); font-size:10px; overflow-wrap:anywhere; }
+.price { color:var(--orange); }
+.row-actions { grid-column:1/-1; display:flex; justify-content:flex-end; gap:12px; font-size:11px; }
+.row-actions form { display:inline; }
+.link-button { padding:0; border:0; background:none; font:inherit; cursor:pointer; }
+.danger-text { color:#a74632!important; }
+.inline-delete { margin-top:10px; text-align:right; }
+.empty-small { color:var(--muted); font-size:12px; }
+.empty-state { padding:28px; border:1px dashed #c9c7bd; border-radius:7px; background:var(--paper); text-align:center; }
+.empty-state h3 { margin:0; font-size:19px; }
+.empty-state p { margin:5px 0 0; color:var(--muted); font-size:13px; }
+
+/* The record forms share one section and use plain, consistent controls. */
+.record-section { margin-top:34px; }
+.record-section .section-heading { margin-bottom:14px; }
+.form-card h3 { margin:0; font-size:20px; }
+.form-card > .muted { margin:4px 0 16px; }
+.form-stack { display:flex; flex-direction:column; gap:11px; }
+.form-stack label { display:flex; flex-direction:column; gap:5px; font-size:12px; font-weight:bold; }
+.form-stack input,.form-stack select { width:100%; min-height:39px; padding:8px 10px; border:1px solid #cfcec5; border-radius:4px; background:white; color:var(--ink); font:14px Arial,sans-serif; }
+.form-stack input:focus,.form-stack select:focus { outline:2px solid #c8663e44; border-color:var(--orange); }
+.field-row { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.hint { color:var(--muted); font-weight:normal; }
+
+/* Buttons use a common shape and reserve stronger color for key actions. */
+.button { min-height:37px; padding:0 13px; display:inline-flex; align-items:center; justify-content:center; border:0; border-radius:4px; font:bold 12px Arial,sans-serif; text-decoration:none; cursor:pointer; }
+.button-primary { background:var(--orange); color:white; }
+.button-dark { background:var(--green); color:white; }
+.button-light { background:#e9e8e0; color:var(--ink); }
+.button-primary:hover { background:#ad512f; }
+.button-dark:hover { background:#293c30; }
+.button-light:hover { background:#dcdbd2; }
+.button-wide { width:100%; margin-top:4px; }
+.callout { padding:11px; border:1px solid #d8cfb9; border-radius:4px; background:#f8f4e9; color:#625b4b; font-size:13px; }
+
+/* Notices and recent activity keep feedback and account history visible. */
+.notice { margin:12px 0; padding:10px 12px; border-radius:4px; font-size:13px; }
+.success { background:#e8efe5; color:#3d5a3b; }
+.error { background:#f8e9e3; color:#93442f; }
+.page-notice { margin-top:-15px; margin-bottom:22px; }
+.activity-card { margin-top:20px; }
+.activity-card h2 { margin:0; font-size:21px; }
+.activity-card > .muted { margin:3px 0 10px; }
+.activity-row { padding:8px 0; display:grid; grid-template-columns:65px 1fr auto; align-items:center; gap:10px; border-top:1px solid var(--line); font-size:12px; }
+.activity-row time { color:var(--muted); font-size:10px; }
+.activity-action { color:var(--green); font-size:10px; font-weight:bold; text-transform:uppercase; }
+.activity-action.delete { color:var(--orange); }
+
+/* Login, registration, and edit pages use the same straightforward form style. */
+.auth-page { min-height:100vh; padding:24px; display:grid; place-items:center; background:var(--page); }
+.auth-card { width:min(460px,100%); padding:30px; border:1px solid var(--line); border-radius:7px; background:var(--paper); }
+.auth-card > .brand-mark { margin-bottom:16px; }
+.auth-card h1 { margin:5px 0; font-size:31px; }
+.auth-card > .muted { margin:0 0 18px; }
+.auth-foot { margin:18px 0 0; color:var(--muted); font-size:13px; text-align:center; }
+.auth-foot a,.back-link { color:var(--orange); font-weight:bold; text-decoration:none; }
+.edit-card { width:min(500px,100%); }
+.back-link { display:inline-block; margin-bottom:18px; font-size:12px; }
+.login-card { width:min(420px,100%); }
+.page-footer { padding:22px 0 28px; display:flex; justify-content:space-between; color:var(--muted); font-size:11px; }
+.page-footer span { color:var(--green); font-weight:bold; }
+
+/* Smaller screens keep the navigation and forms usable without extra decoration. */
+@media (max-width:900px) {
+    .dashboard-layout { display:flex; flex-direction:column; }
+    .food-photo { height:42vh; min-height:260px; position:relative; top:auto; order:-1; }
+    .topbar { flex-wrap:wrap; gap:8px 14px; padding:10px 20px; }
+    .main-nav { order:3; width:100%; min-height:36px; }
+    .topbar-right { margin-left:auto; }
+    .page-shell { width:min(700px,100%); padding:0 20px; }
+}
+@media (max-width:520px) {
+    .food-photo { height:35vh; min-height:220px; }
+    .page-heading { margin:24px 0 20px; align-items:start; flex-direction:column; }
+    .page-heading h1 { font-size:26px; }
+    .shop-card,.form-card,.activity-card { padding:16px; }
+    .field-row { grid-template-columns:1fr; }
+    .activity-row { grid-template-columns:55px 1fr; }
+    .activity-row time { grid-column:2; }
+    .auth-card { padding:24px 19px; }
+    .page-footer { flex-direction:column; gap:5px; }
+}

@@ -1,0 +1,38 @@
+-- Run this once for an older silogan_db that already has shops and menu_items.
+-- For a new database, import schema.sql instead.
+USE silogan_db;
+
+CREATE TABLE IF NOT EXISTS users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    first_name VARCHAR(100) NOT NULL,
+    last_name VARCHAR(100) NOT NULL,
+    email VARCHAR(190) NOT NULL UNIQUE,
+    password_hash VARCHAR(255) NOT NULL,
+    address VARCHAR(255) DEFAULT NULL,
+    age TINYINT UNSIGNED DEFAULT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+ALTER TABLE shops
+    ADD COLUMN added_by INT DEFAULT NULL,
+    ADD COLUMN updated_by INT DEFAULT NULL,
+    ADD COLUMN last_updated TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    ADD CONSTRAINT fk_shops_added_by FOREIGN KEY (added_by) REFERENCES users(id),
+    ADD CONSTRAINT fk_shops_updated_by FOREIGN KEY (updated_by) REFERENCES users(id);
+
+ALTER TABLE menu_items
+    ADD COLUMN added_by INT DEFAULT NULL,
+    ADD COLUMN updated_by INT DEFAULT NULL,
+    ADD COLUMN last_updated TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    ADD CONSTRAINT fk_menu_added_by FOREIGN KEY (added_by) REFERENCES users(id),
+    ADD CONSTRAINT fk_menu_updated_by FOREIGN KEY (updated_by) REFERENCES users(id);
+
+CREATE TABLE IF NOT EXISTS activity_logs (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    action VARCHAR(20) NOT NULL,
+    record_type VARCHAR(30) NOT NULL,
+    record_id INT NOT NULL,
+    happened_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_activity_user FOREIGN KEY (user_id) REFERENCES users(id)
+);
