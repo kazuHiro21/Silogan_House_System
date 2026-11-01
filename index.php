@@ -5,8 +5,9 @@ require_login();
 $shops = $conn->query('SELECT s.*, creator.first_name AS creator_first, creator.last_name AS creator_last, editor.first_name AS editor_first, editor.last_name AS editor_last FROM shops s LEFT JOIN users creator ON s.added_by = creator.id LEFT JOIN users editor ON s.updated_by = editor.id ORDER BY s.id DESC');
 $shopOptions = $conn->query('SELECT id, shop_name FROM shops ORDER BY shop_name');
 $menuStatement = $conn->prepare('SELECT m.*, creator.first_name AS creator_first, creator.last_name AS creator_last, editor.first_name AS editor_first, editor.last_name AS editor_last FROM menu_items m LEFT JOIN users creator ON m.added_by = creator.id LEFT JOIN users editor ON m.updated_by = editor.id WHERE m.shop_id = ? ORDER BY m.item_name');
-$activity = $conn->query('SELECT a.action, a.record_type, a.record_id, a.happened_at, u.first_name, u.last_name FROM activity_logs a JOIN users u ON a.user_id = u.id ORDER BY a.id DESC LIMIT 10');
+$activity = $conn->query('SELECT a.action, a.record_type, a.record_id, a.record_label, a.happened_at, u.first_name, u.last_name FROM activity_logs a JOIN users u ON a.user_id = u.id ORDER BY a.id DESC LIMIT 10');
 $shopCount = $shops->num_rows;
+$menuCount = (int) $conn->query('SELECT COUNT(*) AS total FROM menu_items')->fetch_assoc()['total'];
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -15,17 +16,19 @@ $shopCount = $shops->num_rows;
     <title>Shop dashboard - Jun's Silogan</title><link rel="stylesheet" href="assets/style.css">
 </head>
 <body>
-<div class="dashboard-layout">
-<div class="dashboard-panel">
 <header class="topbar">
-    <a class="wordmark" href="index.php"><span class="brand-mark small-mark">JS</span><span>Silogan <b>House</b></span></a>
+    <a class="wordmark" href="index.php"><span class="brand-mark small-mark">JS</span><span>Silogan<b>House</b></span></a>
     <nav class="main-nav" aria-label="Main navigation"><a class="nav-link active" href="index.php">Dashboard</a><a class="nav-link" href="#record-forms">Add records</a></nav>
     <div class="topbar-right"><span class="welcome">Signed in as <strong><?= escape($_SESSION['user_name']) ?></strong></span><a class="button button-light" href="logout.php">Log out</a></div>
 </header>
 <main class="page-shell">
     <section class="page-heading">
-        <div><p class="eyebrow">Silogang masaya, serbisyong masarap at quality subok na!</p><h1>Pick your silogan shop and menu dishes</h1><p class="page-subtitle">Manage shop details, meals, and recent changes.</p></div>
+        <div><p class="eyebrow">JUN'S SILOGAN HOUSE · MANAGEMENT</p><h1>Good food starts with a well-run shop.</h1><p class="page-subtitle">Keep your silogan locations, menu, and team activity in one place.</p></div>
         <a class="button button-primary" href="#record-forms">Add a record</a>
+        <div class="dashboard-stats" aria-label="Dashboard summary">
+            <div><strong><?= (int) $shopCount ?></strong><span>Shops</span></div>
+            <div><strong><?= $menuCount ?></strong><span>Menu items</span></div>
+        </div>
     </section>
     <?php if (!empty($_GET['message'])): ?><div class="notice success page-notice"><?= escape($_GET['message']) ?></div><?php endif; ?>
 
@@ -81,21 +84,11 @@ $shopCount = $shops->num_rows;
     <section class="activity-card"><div><p class="eyebrow">AUDIT LOGS</p><h2>Recent activity</h2><p class="muted">A record of changes and updates made in the system by a user</p></div>
         <?php if ($activity->num_rows > 0): ?><div class="activity-list">
             <?php while ($entry = $activity->fetch_assoc()): ?>
-                <div class="activity-row"><span class="activity-action <?= escape($entry['action']) ?>"><?= escape(ucfirst($entry['action'])) ?></span><span><strong><?= escape($entry['first_name'] . ' ' . $entry['last_name']) ?></strong> <?= escape($entry['action']) ?> <?= escape(str_replace('_', ' ', $entry['record_type'])) ?> #<?= (int) $entry['record_id'] ?></span><time><?= escape($entry['happened_at']) ?></time></div>
+                <div class="activity-row"><span class="activity-action <?= escape($entry['action']) ?>"><?= escape(ucfirst($entry['action'])) ?></span><span><strong><?= escape($entry['first_name'] . ' ' . $entry['last_name']) ?></strong> <?= escape($entry['action'] === 'insert' ? 'added' : ($entry['action'] === 'update' ? 'updated' : 'deleted')) ?> <?= escape(str_replace('_', ' ', $entry['record_type'])) ?> <strong><?= escape($entry['record_label'] ?: 'record') ?></strong> #<?= (int) $entry['record_id'] ?></span><time><?= escape($entry['happened_at']) ?></time></div>
             <?php endwhile; ?>
         </div><?php else: ?><p class="empty-small">Activity will appear here after you add, edit, or delete a record</p><?php endif; ?>
     </section>
     <footer class="page-footer">Silogan House<span>TATAK SILOGAN NA PANG MASA ITO!</span></footer>
 </main>
-</div>
-<aside class="food-photo" aria-label="Silog meals">
-    <?php if (file_exists(__DIR__ . '/assets/silog.jpg')): ?>
-        <img src="assets/silog.jpg" alt="A plate of silog with egg, garlic rice, and calamansi">
-        <div class="photo-caption"><span>JUN'S SILOGAN HOUSE</span><strong>Good food,<br>served simply.</strong></div>
-    <?php else: ?>
-        <div class="photo-placeholder"><span>JUN'S SILOGAN HOUSE</span><strong>Your silog photo<br>will appear here.</strong></div>
-    <?php endif; ?>
-</aside>
-</div>
 </body>
 </html>
