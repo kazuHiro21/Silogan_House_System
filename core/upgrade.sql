@@ -1,5 +1,3 @@
--- Run this once for an older silogan_db that already has shops and menu_items.
--- For a new database, import schema.sql instead.
 USE silogan_db;
 
 CREATE TABLE IF NOT EXISTS users (
@@ -36,3 +34,6 @@ CREATE TABLE IF NOT EXISTS activity_logs (
     happened_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT fk_activity_user FOREIGN KEY (user_id) REFERENCES users(id)
 );
+
+ALTER TABLE activity_logs
+    ADD COLUMN record_label VARCHAR(255) DEFAULT NULL;
