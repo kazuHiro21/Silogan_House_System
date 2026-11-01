@@ -17,29 +17,26 @@ h1,h2,h3,h4 { font-family:Georgia,'Times New Roman',serif; }
 .topbar-right { margin-left:auto; gap:14px; }
 .welcome,.muted,.section-note { color:var(--muted); font-size:13px; }
 
-/* The photo and dashboard share the screen evenly on wider displays. */
-.dashboard-layout { min-height:100vh; display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); }
-.dashboard-panel { min-width:0; background:#f2efe6; }
-.food-photo { height:100vh; min-height:560px; position:sticky; top:0; overflow:hidden; background:#cbb47a; }
-.food-photo img { width:100%; height:100%; display:block; object-fit:cover; object-position:center; }
-.photo-caption { position:absolute; right:0; bottom:0; left:0; padding:26px 30px; background:rgba(35,46,37,.76); color:white; }
-.photo-caption span,.photo-placeholder span { font-size:10px; font-weight:bold; letter-spacing:1.6px; }
-.photo-caption strong,.photo-placeholder strong { display:block; margin-top:6px; font:26px/1.15 Georgia,serif; }
-.photo-placeholder { height:100%; padding:30px; display:flex; flex-direction:column; justify-content:end; background:#b99a57; color:white; }
-
-/* The page heading replaces the large hero with a clear title and one action. */
-.page-shell { width:100%; margin:0 auto; padding:0 28px; }
-.page-heading { margin:30px 0 24px; display:flex; align-items:center; justify-content:space-between; gap:16px; }
-.page-heading h1 { max-width:430px; margin:5px 0; font-size:29px; line-height:1.18; }
+/* The dashboard uses the full viewport width without relying on a hero photo. */
+.page-shell { width:min(1180px,100%); margin:0 auto; padding:0 28px; }
+.page-heading { margin:28px 0 30px; padding:28px 30px; display:grid; grid-template-columns:minmax(0,1fr) auto; align-items:center; gap:20px; border-radius:8px; background:var(--green); color:#fffefa; }
+.page-heading h1 { max-width:620px; margin:7px 0; font-size:34px; line-height:1.15; }
+.page-heading .eyebrow { color:#e7c7ad; }
 .page-subtitle,.section-note { margin:4px 0 0; color:var(--muted); font-size:13px; }
+.page-heading .page-subtitle { color:#e3e7df; }
+.dashboard-stats { grid-column:1/-1; display:flex; gap:28px; padding-top:16px; border-top:1px solid #ffffff30; }
+.dashboard-stats div { display:flex; align-items:baseline; gap:8px; }
+.dashboard-stats strong { font:24px Georgia,'Times New Roman',serif; }
+.dashboard-stats span { color:#e3e7df; font-size:12px; }
+.page-heading > .button { grid-column:2; grid-row:1; }
 .eyebrow { margin:0; color:var(--orange); font-size:10px; font-weight:bold; letter-spacing:1.5px; }
 
 /* The shop list uses simple cards with the owner and audit details grouped. */
 .section-heading { margin:0 0 14px; display:flex; justify-content:space-between; align-items:end; }
 .section-heading h2 { margin:0; font-size:23px; }
 .count-badge { margin-left:5px; padding:2px 8px; border-radius:12px; background:#e8e9e2; color:var(--green); font: bold 12px Arial,sans-serif; vertical-align:middle; }
-.shop-grid,.forms-grid { display:grid; grid-template-columns:1fr; gap:13px; }
-.shop-card,.form-card,.activity-card { padding:17px; border:1px solid var(--line); border-radius:7px; background:var(--paper); }
+.shop-grid,.forms-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; }
+.shop-card,.form-card,.activity-card { padding:20px; border:1px solid var(--line); border-radius:8px; background:var(--paper); }
 .shop-card-head { display:flex; justify-content:space-between; align-items:start; gap:10px; }
 .card-kicker { color:var(--orange); font-size:10px; font-weight:bold; letter-spacing:1px; }
 .shop-card h3 { margin:3px 0; font-size:21px; }
@@ -97,7 +94,7 @@ h1,h2,h3,h4 { font-family:Georgia,'Times New Roman',serif; }
 .activity-card { margin-top:20px; }
 .activity-card h2 { margin:0; font-size:21px; }
 .activity-card > .muted { margin:3px 0 10px; }
-.activity-row { padding:8px 0; display:grid; grid-template-columns:65px 1fr auto; align-items:center; gap:10px; border-top:1px solid var(--line); font-size:12px; }
+.activity-row { padding:10px 0; display:grid; grid-template-columns:65px minmax(0,1fr) auto; align-items:center; gap:10px; border-top:1px solid var(--line); font-size:12px; }
 .activity-row time { color:var(--muted); font-size:10px; }
 .activity-action { color:var(--green); font-size:10px; font-weight:bold; text-transform:uppercase; }
 .activity-action.delete { color:var(--orange); }
@@ -117,18 +114,18 @@ h1,h2,h3,h4 { font-family:Georgia,'Times New Roman',serif; }
 .page-footer span { color:var(--green); font-weight:bold; }
 
 /* Smaller screens keep the navigation and forms usable without extra decoration. */
-@media (max-width:900px) {
-    .dashboard-layout { display:flex; flex-direction:column; }
-    .food-photo { height:42vh; min-height:260px; position:relative; top:auto; order:-1; }
+@media (max-width:760px) {
+    .shop-grid,.forms-grid { grid-template-columns:1fr; }
     .topbar { flex-wrap:wrap; gap:8px 14px; padding:10px 20px; }
     .main-nav { order:3; width:100%; min-height:36px; }
     .topbar-right { margin-left:auto; }
-    .page-shell { width:min(700px,100%); padding:0 20px; }
+    .page-shell { padding:0 20px; }
 }
 @media (max-width:520px) {
-    .food-photo { height:35vh; min-height:220px; }
-    .page-heading { margin:24px 0 20px; align-items:start; flex-direction:column; }
-    .page-heading h1 { font-size:26px; }
+    .page-heading { margin:24px 0 20px; padding:22px; grid-template-columns:1fr; }
+    .page-heading h1 { font-size:27px; }
+    .page-heading > .button { grid-column:1; grid-row:auto; justify-self:start; }
+    .dashboard-stats { grid-column:1; gap:20px; }
     .shop-card,.form-card,.activity-card { padding:16px; }
     .field-row { grid-template-columns:1fr; }
     .activity-row { grid-template-columns:55px 1fr; }
