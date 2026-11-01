@@ -46,6 +46,7 @@ CREATE TABLE IF NOT EXISTS activity_logs (
     action VARCHAR(20) NOT NULL,
     record_type VARCHAR(30) NOT NULL,
     record_id INT NOT NULL,
+    record_label VARCHAR(255) DEFAULT NULL,
     happened_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT fk_activity_user FOREIGN KEY (user_id) REFERENCES users(id)
 );
