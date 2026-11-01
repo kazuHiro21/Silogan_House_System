@@ -17,7 +17,7 @@ users
 shops (one) ---------------- (many) menu_items
 ```
 
-The `users` table stores each account's first name, last name, email, password hash, and optional address and age. Both shops and menu items store `added_by`, `updated_by`, and `last_updated`. The `activity_logs` table records insert, update, and delete actions with the user's ID, the affected record type and ID, and the action time.
+The `users` table stores each account's first name, last name, email, password hash, and optional address and age. Both shops and menu items store `added_by`, `updated_by`, and `last_updated`. The `activity_logs` table records insert, update, and delete actions with the user's ID, the affected record type, ID and name, and the action time. Record changes and their audit events are committed together.
 
 All four tables are in the same MySQL database named `silogan_db`. The SQL files describe how to create or upgrade the database; PHP stores the actual account, shop, menu, and activity rows in MySQL.
 
@@ -27,17 +27,16 @@ All four tables are in the same MySQL database named `silogan_db`. The SQL files
 2. **Log in:** `login.php` finds the account by email and checks the submitted password against its saved hash. A successful login starts a PHP session.
 3. **Protect the dashboard:** `index.php` and the shop and menu handlers check that a user session exists. Visitors who are not signed in are sent to the login page.
 4. **Manage records:** The dashboard shows shops and their menu items. The insert, update, and delete handlers save changes to MySQL using prepared statements.
-5. **Track changes:** The current user's ID is saved with new or updated shop and menu records. Each action is also written to `activity_logs`, which the dashboard displays as recent activity.
+5. **Track changes:** The current user's ID is saved with new or updated shop and menu records. Each action is also written to `activity_logs`, including the record name, which the dashboard displays as recent activity.
 6. **Log out:** `logout.php` clears the session and returns the user to the login page.
 
-Passwords are stored as hashes, not as readable passwords. Existing shop or menu rows created before account tracking have no known creator, so their `added_by` field is empty.
+Passwords are stored as hashes, not as readable passwords. Existing shop or menu rows created before account tracking have no known creator, so their `added_by` field is empty. Audit entries keep the actor, action, record type, record ID, record name, and timestamp. Names are saved with the event so deletions remain understandable after the original row is gone.
 
 ## Project files
 
 ```text
 AppDev_Exam/
 ├── assets/
-│   ├── silog.jpg          # Dashboard photo
 │   └── style.css          # Page layout and styling
 ├── core/
 │   ├── dbconfig.php       # MySQL connection settings
@@ -63,7 +62,8 @@ AppDev_Exam/
 1. Put the project folder in `C:\xampp\htdocs\AppDev_Exam`.
 2. Start **Apache** and **MySQL** from the XAMPP Control Panel.
 3. Open phpMyAdmin at `http://localhost/phpmyadmin`.
-4. For a new database, import `core/schema.sql`. If `silogan_db` already has the older `shops` and `menu_items` tables, run `core/upgrade.sql` **once** instead. Do not run the upgrade script repeatedly; it adds columns and keys to the existing tables.
+4. For a new database, import `core/schema.sql`. If `silogan_db` already has the older `shops` and `menu_items` tables, run `core/upgrade.sql` **once** instead. Do not run the upgrade script repeatedly; it adds columns and keys to the existing tables, including the record-name field for audit history.
+   If you already ran the earlier version of `schema.sql` or `upgrade.sql`, do not rerun `upgrade.sql`; add the audit-name column once with `ALTER TABLE activity_logs ADD COLUMN record_label VARCHAR(255) DEFAULT NULL;`.
 5. If your MySQL connection settings differ from the XAMPP defaults, update the host, username, password, or database name at the top of `core/dbconfig.php`.
 6. Open `http://localhost/AppDev_Exam/`, register an account, and log in.
 
@@ -74,7 +74,7 @@ AppDev_Exam/
 | `users` | Account and personal information, plus the password hash |
 | `shops` | Silogan shop details and user IDs for creation and updates |
 | `menu_items` | Meals, prices, descriptions, parent shop ID, and user tracking |
-| `activity_logs` | Who inserted, updated, or deleted a shop or menu item and when |
+| `activity_logs` | Who inserted, updated, or deleted each shop or menu item, its name, and when |
 
 ## Database library note
 
