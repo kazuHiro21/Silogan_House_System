@@ -9,11 +9,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $contact = trim($_POST['contact_number'] ?? '');
     if ($id > 0 && $name !== '' && $owner !== '') {
         $userId = current_user_id();
-        $statement = $conn->prepare('UPDATE shops SET shop_name = ?, owner_name = ?, address = ?, contact_number = ?, updated_by = ? WHERE id = ?');
-        $statement->bind_param('ssssii', $name, $owner, $address, $contact, $userId, $id);
-        $statement->execute();
-        log_activity($conn, $userId, 'update', 'shop', $id);
-        redirect_home('Shop updated.');
+        $conn->begin_transaction();
+        try {
+            $statement = $conn->prepare('UPDATE shops SET shop_name = ?, owner_name = ?, address = ?, contact_number = ?, updated_by = ? WHERE id = ?');
+            $statement->bind_param('ssssii', $name, $owner, $address, $contact, $userId, $id);
+            $statement->execute();
+            log_activity($conn, $userId, 'update', 'shop', $id, $name);
+            $conn->commit();
+            redirect_home('Shop updated.');
+        } catch (Throwable $error) {
+            $conn->rollback();
+            error_log('Shop update failed: ' . $error->getMessage());
+            redirect_home('Could not update the shop.');
+        }
     }
 }
 $statement = $conn->prepare('SELECT * FROM shops WHERE id = ?');

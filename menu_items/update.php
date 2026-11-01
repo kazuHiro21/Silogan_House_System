@@ -9,11 +9,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $description = trim($_POST['description'] ?? '');
     if ($id > 0 && $name !== '' && $price > 0) {
         $userId = current_user_id();
-        $statement = $conn->prepare('UPDATE menu_items SET item_name = ?, price = ?, category = ?, description = ?, updated_by = ? WHERE id = ?');
-        $statement->bind_param('sdssii', $name, $price, $category, $description, $userId, $id);
-        $statement->execute();
-        log_activity($conn, $userId, 'update', 'menu_item', $id);
-        redirect_home('Menu item updated.');
+        $conn->begin_transaction();
+        try {
+            $statement = $conn->prepare('UPDATE menu_items SET item_name = ?, price = ?, category = ?, description = ?, updated_by = ? WHERE id = ?');
+            $statement->bind_param('sdssii', $name, $price, $category, $description, $userId, $id);
+            $statement->execute();
+            log_activity($conn, $userId, 'update', 'menu_item', $id, $name);
+            $conn->commit();
+            redirect_home('Menu item updated.');
+        } catch (Throwable $error) {
+            $conn->rollback();
+            error_log('Menu item update failed: ' . $error->getMessage());
+            redirect_home('Could not update the menu item.');
+        }
     }
 }
 $statement = $conn->prepare('SELECT * FROM menu_items WHERE id = ?');
