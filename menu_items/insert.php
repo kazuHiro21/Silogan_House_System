@@ -9,11 +9,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $description = trim($_POST['description'] ?? '');
     if ($shopId > 0 && $name !== '' && $price > 0) {
         $userId = current_user_id();
-        $statement = $conn->prepare('INSERT INTO menu_items (shop_id, item_name, price, category, description, added_by) VALUES (?, ?, ?, ?, ?, ?)');
-        $statement->bind_param('isdssi', $shopId, $name, $price, $category, $description, $userId);
-        $statement->execute();
-        log_activity($conn, $userId, 'insert', 'menu_item', (int) $conn->insert_id);
-        redirect_home('Menu item added.');
+        $conn->begin_transaction();
+        try {
+            $statement = $conn->prepare('INSERT INTO menu_items (shop_id, item_name, price, category, description, added_by) VALUES (?, ?, ?, ?, ?, ?)');
+            $statement->bind_param('isdssi', $shopId, $name, $price, $category, $description, $userId);
+            $statement->execute();
+            log_activity($conn, $userId, 'insert', 'menu_item', (int) $conn->insert_id, $name);
+            $conn->commit();
+            redirect_home('Menu item added.');
+        } catch (Throwable $error) {
+            $conn->rollback();
+            error_log('Menu item creation failed: ' . $error->getMessage());
+            redirect_home('Could not add the menu item.');
+        }
     }
 }
 redirect_home('Please choose a shop and enter a meal name and price.');
