@@ -34,12 +34,12 @@ function redirect_home(string $message = ''): void
     exit;
 }
 
-function log_activity(mysqli $conn, int $userId, string $action, string $recordType, int $recordId): void
+function log_activity(mysqli $conn, int $userId, string $action, string $recordType, int $recordId, string $recordLabel): void
 {
     $statement = $conn->prepare(
-        'INSERT INTO activity_logs (user_id, action, record_type, record_id) VALUES (?, ?, ?, ?)'
+        'INSERT INTO activity_logs (user_id, action, record_type, record_id, record_label) VALUES (?, ?, ?, ?, ?)'
     );
-    $statement->bind_param('issi', $userId, $action, $recordType, $recordId);
+    $statement->bind_param('issis', $userId, $action, $recordType, $recordId, $recordLabel);
     $statement->execute();
     $statement->close();
 }
